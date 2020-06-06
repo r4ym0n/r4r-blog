@@ -5,17 +5,21 @@
   
 
   
-  <title>Hexo</title>
+  <title>R4ym0n-blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
+  <meta name="description" content="personal blogging site">
+<meta name="keywords" content="tech life">
+<meta property="og:type" content="website">
+<meta property="og:title" content="R4ym0n-blog">
 <meta property="og:url" content="http://yoursite.com/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:locale" content="default">
+<meta property="og:site_name" content="R4ym0n-blog">
+<meta property="og:description" content="personal blogging site">
+<meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
+<meta name="twitter:title" content="R4ym0n-blog">
+<meta name="twitter:description" content="personal blogging site">
   
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="alternate" href="/atom.xml" title="R4ym0n-blog" type="application/atom+xml">
   
   
     <link rel="icon" href="/favicon.png">
@@ -34,7 +38,7 @@
   <div id="header-outer" class="outer">
     <div id="header-title" class="inner">
       <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
+        <a href="/" id="logo">R4ym0n-blog</a>
       </h1>
       
     </div>
@@ -111,25 +115,1087 @@
 
 
   
+    <article id="post-nginx-e5-ae-9e-e7-8e-b0http-https-e7-9a-84-e9-80-8f-e6-98-8e-e4-bb-a3-e7-90-86" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/06/06/nginx-e5-ae-9e-e7-8e-b0http-https-e7-9a-84-e9-80-8f-e6-98-8e-e4-bb-a3-e7-90-86/" class="article-date">
+  <time datetime="2020-06-05T19:09:46.000Z" itemprop="datePublished">2020-06-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OP之路/">OP之路</a>
+  </div>
 
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/06/nginx-e5-ae-9e-e7-8e-b0http-https-e7-9a-84-e9-80-8f-e6-98-8e-e4-bb-a3-e7-90-86/">Nginx 实现HTTP/HTTPS的透明代理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>使用透明代理来解决，存在的某些站点的不可达。这里直接贴出来 ng的配置</p>
+<p>对于 80 端口这里使用 直接 proxypass的方式</p>
+<pre><code>server {
+    resolver 114.114.114.114;
+    listen 80;
+    location / {
+        proxy_pass http://$http_host$request_uri;
+        proxy_set_header HOST $http_host;
+        proxy_buffers 256 4k;
+        proxy_max_temp_file_size 0k;
+        proxy_connect_timeout 30;
+        proxy_send_timeout 60;
+        proxy_read_timeout 60;
+        proxy_next_upstream error timeout invalid_header http_502;
+    }
+}</code></pre><p>对于 443 端口，不能使用 http 的形式，因为是涉及到了包的内容，使用4层转发来解决</p>
+<pre><code>stream {
+    resolver 114.114.114.114;
+    server {
+        listen 443;
+        ssl_preread on;
+        proxy_connect_timeout 5s;
+        proxy_pass $ssl_preread_server_name:$server_port;
+    }
+}</code></pre><p>使用时候，直接在 主机上配置 <code>/etc/hosts</code>里写上域名的host即可</p>
+<pre><code>192.168.111.252 xxx.example.com</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/06/06/nginx-e5-ae-9e-e7-8e-b0http-https-e7-9a-84-e9-80-8f-e6-98-8e-e4-bb-a3-e7-90-86/" data-id="ckb3umkej006yq4takp00yhw8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-git-e9-85-8d-e7-bd-ae-ssh-e8-af-81-e4-b9-a6-e8-ae-bf-e9-97-ae" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/06/06/git-e9-85-8d-e7-bd-ae-ssh-e8-af-81-e4-b9-a6-e8-ae-bf-e9-97-ae/" class="article-date">
+  <time datetime="2020-06-05T18:51:41.000Z" itemprop="datePublished">2020-06-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/DEV/">DEV</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/06/git-e9-85-8d-e7-bd-ae-ssh-e8-af-81-e4-b9-a6-e8-ae-bf-e9-97-ae/">GIT 配置 SSH 证书访问</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Q：为什么需要使用证书来进行认证呢？ A：自己的电脑上有登录其他的GIT的账号，来回切换太麻烦</p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>创建得 puk 和 一个key文件在 <code>~/.ssh/</code> 下面，上传 公钥到 github 上来进行保存</p>
+<pre><code># 生成RSA密钥对
+ssh-keygen -t rsa -b 4096 -C &quot;your_email@example.com&quot;
+
+# 自定义命名
+# &gt; Enter a file in which to save the key (/Users/you/.ssh/id_rsa): [Press enter]
+# 这里直接回车，或者创建自己名字的证书，不建议覆盖</code></pre><p>配置 ssh 的策略文件，在请求到 github 域的时候使用这个公钥来进行通信。</p>
+<pre><code>Host github.com
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/github_rsa
+Host *.github.com
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/github_rsa</code></pre><p>添加到 ssh 的agent 中</p>
+<pre><code>ssh-add -K ~/.ssh/id_rsa</code></pre><p>到这里，证书的添加应该就是 OK的了，进行认证测试</p>
+<pre><code>ssh -T git@github.com</code></pre><h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>这时候，应该就可以直接通过 ssh 来对代码进行 clone 和 push了，但是在之前，有一个细节需要注意，因为这里是多账号环境，如果不在目标目录来设置一下当前的username 等信息，就会以默认的 globle 的git 配置的账号来进行操作。</p>
+<pre><code>git config user.name quartz010
+git config user.email quartz010@outlook.com</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/06/06/git-e9-85-8d-e7-bd-ae-ssh-e8-af-81-e4-b9-a6-e8-ae-bf-e9-97-ae/" data-id="ckb3umkdz005eq4talxvb5zmx" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-1637" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/05/05/1637/" class="article-date">
+  <time datetime="2020-05-05T10:17:53.000Z" itemprop="datePublished">2020-05-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/05/05/1637/">读了前言《Nginx开发从入门到精通》</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>nginx 在工作中作为接入层的使用是已经相当常见了，但是一直是停留在会初步使用的阶段。在挺久之前就看到来 标题中提到的这本书，很想读读去了解一下 nginx 的工作原理。总算是趁着假期，有整块的时间来 看完，读书的节奏一样是翻书，留存率 20%</p>
+<hr>
+<p>20% 都没到，只是看了楚天架构的部分，后面模块编写的部分超出来实际上的使用场景</p>
+<p>这本书是淘宝团队写的，下面给出这本书的链接:</p>
+<ul>
+<li><a href="http://tengine.taobao.org/book/index.html" target="_blank" rel="noopener">Nginx开发从入门到精通</a></li>
+</ul>
+<h2 id="平台初探"><a href="#平台初探" class="headerlink" title="平台初探"></a>平台初探</h2><p>这一章节里面讲了基本架构，数据结构基本配置，以及模块化体系的请求流程。</p>
+<p>数据结构的部分，看了下但是不是重点，因为没有对应的开发需求。</p>
+<h3 id="为什么使用-nginx-换-apache"><a href="#为什么使用-nginx-换-apache" class="headerlink" title="为什么使用 nginx 换 apache"></a>为什么使用 nginx 换 apache</h3><p>看完初章，可以有这几个答案：</p>
+<ol>
+<li>apach 使用的是多线程的模型，每一个请求会产生一个线程，在并发上千的时候，就已经有上千和线程来十分的消耗资源。</li>
+<li>线程的运行，存在频繁的上下文切换，导致资源消耗量很大。</li>
+<li>nginx 实际上处理任务的就只有 几个 worker 进程，所有的请求使用 异步非阻塞的形式来进行监听。使用 epoll 来对建立的套接字文件来进行监听如果有变化，就进行处理。没有频繁的上下文切换。</li>
+</ol>
+<p><strong>nginx 使用的是进程一主多从异步非阻塞模型</strong></p>
+<h3 id="Connection"><a href="#Connection" class="headerlink" title="Connection"></a>Connection</h3><p>Nginx 的主进程来创建监听相应端口的Socketfb，之后fork出子进程来竞争 accept 建立的新的连接，建连成功之后建立 自有的结构体 <strong>ngx_connection_t</strong> 来保存连接。</p>
+<p>这里nignx的最大连接数是需要主注意的不是 <code>ulimit -n</code> 因为这个是系统limit里面的单个进程最大的文件fb数，但由于 nginx 的多进程 的模型，实际上的最大连接数是 进程数 × fb_max</p>
+<p>另外，由于是多个进程的竞争连接，为了实现多个进程之间的连接句柄平衡。在 竞争逻辑里面有这样的逻辑，计算当前进程的建连数和总连接数的比较。如该其值超过，会置位一个 <code>ngx_accept_disabled</code> 的值来避免该进程进行建立新连接。</p>
+<h3 id="request"><a href="#request" class="headerlink" title="request"></a>request</h3><p>Connect 是在4层的逻辑，这里的request 到了7曾，在request 里面，http 请求传输之后开始进行行解析。</p>
+<p>按行来处理，先对请求头来进行解析。之后使用 map 的结果来存储解析结果，以便与配置中的规则匹配来进行特殊处理。</p>
+<p>请求内容北存放在缓冲区中，在行读取到两个连续的回车之后，意味着请求头的结束。之后会使用请求处理的函数来进行处理，会区分是读操作还是写操作，使用不同的handle 函数来进行处理。</p>
+<h3 id="worker-进程"><a href="#worker-进程" class="headerlink" title="worker 进程"></a>worker 进程</h3><p>worker进程中，<code>ngx_worker_process_cycle()</code>函数就是这个无限循环的处理函数。在这个函数中，一个请求的简单处理流程如下：</p>
+<ol>
+<li>操作系统提供的机制（例如epoll, kqueue等）产生相关的事件。</li>
+<li>接收和处理这些事件，如是接受到数据，则产生更高层的request对象。</li>
+<li>处理request的header和body。</li>
+<li>产生响应，并发送回客户端。</li>
+<li>完成request的处理。</li>
+<li>重新初始化定时器及其他事件。</li>
+</ol>
+<h3 id="请求处理流程-Link"><a href="#请求处理流程-Link" class="headerlink" title="请求处理流程 Link"></a>请求处理流程 <a href="http://tengine.taobao.org/book/chapter_02.html#id13" target="_blank" rel="noopener">Link</a></h3><p>一个 http 请求到nginx 的服务器之后，有一下几个阶段。</p>
+<ol>
+<li>初始化http request 建立对象</li>
+<li>处理请求头 （解析）</li>
+<li>处理请求体</li>
+<li>调用和请求(url/location)关联的handler</li>
+<li>依次调用各个phase handler 来处理</li>
+</ol>
+<p>重点就是在这里的phase handler，如该访问一个静态的文件，在磁盘上读取文件一样是phase handler 的作用。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/05/05/1637/" data-id="ckb3umk9b0000q4ta5dl80vpy" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-e6-98-a8-e6-99-9a-e5-86-99-e7-9a-84-e4-bb-a3-e7-a0-81" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/03/13/e6-98-a8-e6-99-9a-e5-86-99-e7-9a-84-e4-bb-a3-e7-a0-81/" class="article-date">
+  <time datetime="2020-03-12T16:42:22.000Z" itemprop="datePublished">2020-03-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/日记？/">日记？</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/13/e6-98-a8-e6-99-9a-e5-86-99-e7-9a-84-e4-bb-a3-e7-a0-81/">昨晚写的代码</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="PZ写给嘻嘻毛的"><a href="#PZ写给嘻嘻毛的" class="headerlink" title="PZ写给嘻嘻毛的"></a>PZ写给嘻嘻毛的</h1><h2 id="引子？"><a href="#引子？" class="headerlink" title="引子？"></a>引子？</h2><p>偷偷的说，其实嘻嘻毛写的文章pz都有看哦，但是我怕打破这种宁静？hhh</p>
+<p>有时候吧特别想想偷偷的留个言，但是总觉得一两句话少，长篇大论就多。</p>
+<p>害怕有的时候，嘻嘻毛觉得受忽视了，实际上才没呢。</p>
+<p>真的是很矛盾啊，所以就想着给嘻嘻毛写点点东西，主题一样，告诉她pz爱她😚</p>
+<p>这篇文章在周一的时候都已经创建了，那时候是 3/9 号，嘻嘻毛写出来心中的pz的时候，她还熬了个夜。（关心下～）</p>
+<p>但是这几天，你（应该只有你哼哼）知道的突然状态超级差… 各种麻烦事铺面而来，电脑上打开的这个编辑器，都不知道堆到哪里去了。</p>
+<hr>
+<p>今天是周四！ 嘻嘻毛又更新了blog，所以pz今天一定要把这个写完！</p>
+<h2 id="开心的事情"><a href="#开心的事情" class="headerlink" title="开心的事情"></a>开心的事情</h2><h3 id="今天是植树节"><a href="#今天是植树节" class="headerlink" title="今天是植树节"></a>今天是植树节</h3><p>今天是植树节，有一件好开心好开心的事情，不知道你能不能一下子想起来</p>
+<p>哼哼，我们的打印店开业了！蚂蚁森林种一棵🌲留念！也是我们的留言板？不知道哦</p>
+<p>偷偷说，不是今天手机提醒我，我还不知道今天是🌲节。于是就想着，去种棵树吧，云种树。</p>
+<p>早上发了邀请，其实我还是好紧张… 可能和女神说话都是这种感觉？ 其实我好害怕不理pz的request，这样的话sad。</p>
+<p>直到中午，我忍不住了，我知道嘻嘻毛的手机平时是不会随便响的，于是我就去问问她。她没正面回答，心里咯噔。</p>
+<p>（家里网不好，打开种树界面比较久，所以还是咯噔了一会），进去之后，发现一颗小树苗，而且已经被浇了水。</p>
+<p>哈哈哈，当时盯着屏幕傻乐好久！但是嘻嘻毛那时候应该去吃饭了，但是太开心了，反而不知道该打些什么字了。</p>
+<p>要是她在身边，一定抱抱她那种！</p>
+<p><strong>这部分纪念pz&amp;ann的打印店开业～</strong></p>
+<h3 id="Pz晚安"><a href="#Pz晚安" class="headerlink" title="Pz晚安"></a>Pz晚安</h3><pre><code>pz.goodnight = function(Obj) {
+    everyday.run(SayGoodNight(Obj));
+}
+ann.goodnight = function(Obj) {
+    Date(&apos;20200218&apos;).run(SayGoodNight(Obj));
+    Date(&apos;20200312&apos;).run(SayGoodNight(Obj));
+    // ... But there will be more
+}
+$( document ).ready(function () {
+  pz.obj = ann;
+  ann.obj = pz;
+  pz.goodnight(pz.obj);
+  ann.goodnight(ann.obj);  
+})</code></pre><p>虽然只是个简单的词汇，爱你也许也就这么简单？</p>
+<h3 id="文艺的爱人"><a href="#文艺的爱人" class="headerlink" title="文艺的爱人"></a>文艺的爱人</h3><pre><code>p: 哈哈哈，那我完了，我得多去看看书
+a: 不，你有
+p: 沉默3秒
+（完）</code></pre><p>没错就是我，哼哼</p>
+<h3 id="一个又一个梦"><a href="#一个又一个梦" class="headerlink" title="一个又一个梦"></a>一个又一个梦</h3><p>💋 AND ⚡️👰</p>
+<h2 id="想说的话"><a href="#想说的话" class="headerlink" title="想说的话"></a>想说的话</h2><p>前面说完了开心的事，这里写点想说和我家老板娘说的话（你知道是谁吧？）</p>
+<h3 id="Question-–"><a href="#Question-–" class="headerlink" title="Question –;"></a>Question –;</h3><p>先说最近的，最近，嘻嘻毛问pz的问题少了（说好的十万个为什么呢？）</p>
+<p>不用解释，我知道为什么（狗头），之前有我有想过，啊是不是又烦pz了之类的（原谅我啦，艰难的得到才会珍惜～）</p>
+<p>然后我深刻思考了一下子的行为，我！有问题！</p>
+<p>嗯，虽然一直想成为嘻嘻毛心中的 bat man（你平安夜送我的苹果盒子上的word）。</p>
+<p>但是慢慢意识到，其实我做的不对，或者说我太早的公布答案，结果。。。导致毛毛最后反而并没学到什么</p>
+<p>这点是我的问题，dbq，pz有时候讲着讲着就自我陶醉去了，哭。</p>
+<p>嘻嘻毛也知道pz的心思，也就没过多问pz问题了，哈哈相互理解啦！</p>
+<p>问题的理解是需要有自己思考后，才会有收获的，单单看结果，就是和背书一样没意思</p>
+<p>为什么我想说这个呢？hhhh 因为我去悄咪咪的看了看嘻嘻毛的blog！</p>
+<p>都是学习笔记，Surprising，遇到问题之后解决问题，这样进步最快了。</p>
+<p>嘻嘻，为她感到高兴，其实一直有看到嘻嘻毛的进步，可是我好像没有说明，今晚告诉她===</p>
+<h3 id="记得和家里的电话"><a href="#记得和家里的电话" class="headerlink" title="记得和家里的电话"></a>记得和家里的电话</h3><p>感觉我们都可以看到彼此的另外一面，觉得嘻嘻毛是一个很单纯的小朋友，哈哈，可能不应该说单纯。</p>
+<p>记得刘老板说的不，不成熟。。。 但是我觉得，大家都是成年人了，马上都到法定婚龄了。再说不成熟有点尖锐。但是呢，哈哈这个词倒是恰当。也就先用着了。</p>
+<blockquote>
+<p>从来没有一节课教过我们如何变成大人，可能在经历之间就突然发现自己长大的，一种奇妙的感觉。所以，勇敢甚至有些冲动的往前走，别想那么多，也别犹豫了，不觉间发现自己就已经做到了。</p>
+<p>（🤫，还好pz冲动了一下下，不然就没有 2017/5/19的那句我喜欢你了嘻嘻）</p>
+</blockquote>
+<p>这句话，摘自老板娘您的面经里面，我给搬了过来。<strong>变成大人</strong> 这个词，解释起来有好多种，自己想（狗头）。</p>
+<p>上面那段话呢，希望嘻嘻毛相信自己，可以做好勇敢去做，不要因为犹豫错过了机会，我们已经做过了三年的大学了，再往后，我一分钟都不想错过了，hhhh。</p>
+<p>另外一方面呢，实际上是 <strong>心智</strong> 这个词怎么看呢。可能这个是我们成长的必经的心态吧。</p>
+<p>当时，刚刚工作的时候，感觉周围很新鲜一切都是新的。但是满满的发现，啊，是真正的孤独感，很孤独。</p>
+<p>有时候又很无助，因为自己变成一个人了。那时候，真的好想好想嘻嘻毛（现在也很想，看看鞋带就知道），但是那时候关系好想闹的很僵，（也不想着挽留一下pz，哼！就让他那么走了）。</p>
+<p>总之一切的感觉都变了，不能只想着自己了，因为周围的东西都是那么的冰冷和独立。</p>
+<p>所以，那时候就开始想到很多，想到和朋友打电话，特别是家里面，每周最少会有一个电话～。</p>
+<hr>
+<p>总之那时候，开始变得关心别人吧，或者说比以前更加？设置天气啥的我就不说了hhh。</p>
+<p>可能pz现在做的真的不是很好，但是真的是遇到人生中的<strong>Mrs right</strong>，要是有时候，能指点一下pz就更好了 hhhh</p>
+<h2 id="后面"><a href="#后面" class="headerlink" title="后面"></a>后面</h2><p>这段话呢，就没有重点了，写着玩玩</p>
+<p>pz其实好喜欢看以前的记录哦，前段时间终于有了勇气看完了属于我们的照片。</p>
+<p>hhh，虽然拍的没那么专业，但是每一张好像都能讲出来一个故事。我喜欢回忆～</p>
+<p>这片文章也是，其实更多的是想给今天的故事以岁月。到几年后，和嘻嘻毛在沙发上躺着静享周末的时候。</p>
+<p>偶然翻出来看看，看看我们过去的故事～</p>
+<p>那今天都写到这里咯，乱糟糟的也不知道自己写了啥。</p>
+<blockquote>
+<p>我有一个梦想会在听到嘻嘻毛说我我爱你的那一刻实现</p>
+<p>是一个值得pz付出的人，是一个共同进步的人，是一个我爱的人。</p>
+</blockquote>
+<h2 id="番外篇"><a href="#番外篇" class="headerlink" title="番外篇"></a>番外篇</h2><p>现在我偷偷给她发了一个表情包，不会告诉她pz现在在打字打字。不过，她学了一天了，明天还有面试真的辛苦。希望她有个好梦～（pz梦中也偷偷亲嘻嘻毛一下，嘘🤫）</p>
+<p>今天又没有给pz道晚安，气，哼哼</p>
+<p>千万不要觉得，pz突然不想理她了，pz只是在写这篇东西，没回过神来。。。。</p>
+<p>可能就是<a href="https://www.zhihu.com/question/24428474" target="_blank" rel="noopener">心流</a>（👈点开你就知道是啥）</p>
+<p>现在是 <strong>202003130025</strong> 好晚了该睡觉了，希望会原谅pz晚上的冷漠。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/03/13/e6-98-a8-e6-99-9a-e5-86-99-e7-9a-84-e4-bb-a3-e7-a0-81/" data-id="ckb3umkd6002uq4ta85bozjfc" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-tab-closing" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/03/07/tab-closing/" class="article-date">
+  <time datetime="2020-03-07T11:56:34.000Z" itemprop="datePublished">2020-03-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/07/tab-closing/">Tab-Closing</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Tab-Closing"><a href="#Tab-Closing" class="headerlink" title="Tab-Closing"></a>Tab-Closing</h1><p>好久没写点东西了，自己再不写点什么，感觉整个人都会昏过去。 这一篇就作为一个收集文章，把各种的之前的标签页关掉。</p>
+<p>这一篇堆了好久了，可能有快一个月了，惨</p>
+<h2 id="非技术"><a href="#非技术" class="headerlink" title="非技术"></a>非技术</h2><ul>
+<li><p><a href="https://zhuanlan.zhihu.com/p/48193189" target="_blank" rel="noopener">一文看懂《乌合之众》：键盘侠为什么能改变世界？</a></p>
+<blockquote>
+<p>勒庞所说的群体<strong>只在某一时间段内或事件发生的过程中，忠于某一领袖或信号源</strong>。当促使他们聚集成群的刺激物消失时，他们也就不再听从这个领袖和信号源。也就是说，<strong>心理诉求消失，群体即消失</strong>。</p>
+<p><strong>领袖要想操纵一个群体其实很简单，只要做出一些断言，然后不断地重复，那么你的观点就会随着这些断言不断被重复宣告而得到传播，像病菌一样传染给更多人</strong>。</p>
+</blockquote>
+</li>
+<li><p><a href="https://blog.t9t.io/" target="_blank" rel="noopener">透明创业板实验</a></p>
+</li>
+<li><p><a href="https://blog.xavierskip.com/2015-05-03-politics-coordinate/" target="_blank" rel="noopener">对“中国政治坐标系测试”进行数据分析</a></p>
+</li>
+</ul>
+<h2 id="好站点："><a href="#好站点：" class="headerlink" title="好站点："></a>好站点：</h2><ul>
+<li><p><a href="http://www.kbase101.com/" target="_blank" rel="noopener">智库101</a></p>
+<p>一些常见问题的知识库没事可以看看</p>
+</li>
+<li><p><a href="https://versus.com/cn" target="_blank" rel="noopener">versus</a></p>
+<p>专门做对比的网站</p>
+</li>
+<li><p><a href="https://www.freewechat.com" target="_blank" rel="noopener">freechat</a></p>
+<p>对公众号的不能不明白，一个微信上被删除的文章的镜像站点</p>
+</li>
+<li><p><a href="https://pincong.rocks/" target="_blank" rel="noopener">品葱</a></p>
+<p>就是一个好论坛值得你一看</p>
+</li>
+<li><p><a href="http://peing.net/" target="_blank" rel="noopener">不能不明白工具箱</a></p>
+<p>不能不明白系列</p>
+</li>
+<li><p><a href="https://www.youtube.com/watch?v=ZawWIXZZrbA&list=PLF9R18laHAEVZuSmmOSkcUbyvWEnBYEF2&index=69" target="_blank" rel="noopener">想学学粤语了</a></p>
+</li>
+<li><p><a href="https://icopy.site/" target="_blank" rel="noopener">开源文档中文镜像站</a></p>
+</li>
+</ul>
+<h2 id="好文："><a href="#好文：" class="headerlink" title="好文："></a>好文：</h2><ul>
+<li><p><a href="https://echocow.cn/articles/2019/05/26/1558880702189.html" target="_blank" rel="noopener">Faas/Serverless 架构 —— 阿里云无服务器计算/函数式计算</a></p>
+<blockquote>
+<p>服务器架构是基于互联网的系统，其中应用开发不使用常规的服务进程。相反，它们仅依赖于第三方服务（例如AWS Lambda服务），客户端逻辑和服务托管远程过程调用的组合。</p>
+</blockquote>
+</li>
+<li><p><a href="https://zhuanlan.zhihu.com/p/36283510" target="_blank" rel="noopener">谷歌趋势 Google Trends 的7个使用方法，很多人都不知道</a></p>
+<blockquote>
+<p>大数据时代，数据的价值是无法估量的。</p>
+<p>如何抓住有效信息并创造财富已成为外贸企业新的增长点。</p>
+<p>说起数据分析，很多人都会觉得遥不可及，<strong>其实有那么一块黄金宝地</strong>，非常值得各位去研究。</p>
+</blockquote>
+</li>
+<li><p><a href="http://blog.krimeshu.com/2018/04/08/colorful-chart-mail-report-with-phantomjs/" target="_blank" rel="noopener">用 PhantomJS 让邮件报表图文并茂</a></p>
+<p>使用 PhantomJS 来实现自动把页面作为邮件发送，但是不适用于复杂页面。</p>
+</li>
+<li><p><a href="https://blog.fundebug.com/2017/05/15/write-excellent-dockerfile/" target="_blank" rel="noopener">如何编写最佳的Dockerfile</a></p>
+<p>这个是在写newpaper的一个全文提取的项目遇到的，准备来自己打一个镜像</p>
+</li>
+<li><p><a href="https://www.yiibai.com/docker/docker-introduction.html" target="_blank" rel="noopener">Docker教程–易百教程</a></p>
+<p>含有各种语言的使用实例</p>
+</li>
+<li><p><a href="https://raft.github.io/" target="_blank" rel="noopener">raft动画</a></p>
+<p>使用动画理解raft一致性算法</p>
+</li>
+</ul>
+<h2 id="好书"><a href="#好书" class="headerlink" title="好书"></a>好书</h2><ul>
+<li><p><a href="https://xiongxiaoer.gitbook.io/the-little-bitcoin-book/qi-ta-zi-yuan" target="_blank" rel="noopener">the-little-bitcoin-book</a></p>
+<p>一本主要在经济学的层面来讲BTC的文章，八个人四天的时间来完成的书，看看也蛮有意思。</p>
+</li>
+<li><p><a href="https://bitcoin.org/files/bitcoin-paper/bitcoin_zh_cn.pdf" target="_blank" rel="noopener">比特币：一种点对点电子货币系统</a></p>
+<p>第N次读白皮书，</p>
+<blockquote>
+<p>激励会有助于鼓励节点保持诚实。如果一个贪心的攻击者有能力聚集比所有诚实节点 更多的 CPU 算力，他将面临是以骗回已付款的方式欺诈别人还是使用这些算力生成新货 币的抉择。他将发现遵守规则比破坏系统和他自己财产的有效性更有利，因为这些规则准 许他获得比所有其他人都多的新货币。</p>
+</blockquote>
+</li>
+<li><p><a href="https://www.kernel.org/doc/html/latest/admin-guide/index.html" target="_blank" rel="noopener">The Linux kernel user’s and administrator’s guide</a></p>
+</li>
+<li><p><a href="https://doc.yonyoucloud.com/doc/docker_practice/index.html" target="_blank" rel="noopener">Docker —— 从入门到实践</a></p>
+<p><a href="https://doc.yonyoucloud.com/doc/docker_practice/docker.com" target="_blank" rel="noopener">Docker</a> 是个伟大的项目，它彻底释放了虚拟化的威力，极大降低了云计算资源供应的成本，同时让应用的分发、测试、部署和分发都变得前所未有的高效和轻松！</p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/03/07/tab-closing/" data-id="ckb3umkf90096q4taoyu4znxn" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Docker/">Docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/K8S/">K8S</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/创业/">创业</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-e8-af-bb-e4-b9-a6-e7-ac-94-e8-ae-b0-e3-80-8athe-little-bitcoin-book-e3-80-8b" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/02/09/e8-af-bb-e4-b9-a6-e7-ac-94-e8-ae-b0-e3-80-8athe-little-bitcoin-book-e3-80-8b/" class="article-date">
+  <time datetime="2020-02-08T17:00:14.000Z" itemprop="datePublished">2020-02-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读本好书/">读本好书</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/02/09/e8-af-bb-e4-b9-a6-e7-ac-94-e8-ae-b0-e3-80-8athe-little-bitcoin-book-e3-80-8b/"># 读书笔记《the-little-bitcoin-book》</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>2020年自一月起Bitcoi迎来了一轮又一轮的上涨，从6000到现在的10000$，自己锁了一点少量的投资到现在却有了5倍多点的收益，还是很不错的。</p>
+<p>之前一直是从技术的角度去了解以及学习 bitcoin 的相关知识，偶然遇到了一本书，是从经济学角度出发的，是以问答的形式来深入浅出的介绍，对与没有经济学基础的读者也可以很好的理解其中的部分金融学的原理。看着内容慢慢的来了兴趣，所以想着把这本书给看完。</p>
+<p>书的前言很有意思，这本书不是一个人写的，是一个八个人小小的团队，有来自各个层面 的不同的想法。</p>
+<blockquote>
+<p>我们是社会活动家、教育家、创业者、企业高管、投资者和研究者。我们来自非洲、亚洲、欧洲、北美和南美。我们在许多方面有所不同，但都痴迷于比特币的一切. 我们相信它将对我们的世界和我们的生活产生至关重要的影响。</p>
+</blockquote>
+<p>这一篇一样的是读书笔记，来记读的过程中遇到的各种的点。</p>
+<hr>
+<blockquote>
+<p>为什么比特币对你的自由、财务和未来至关重要</p>
+<p>本书地址：<a href="https://xiongxiaoer.gitbook.io/the-little-bitcoin-book/" target="_blank" rel="noopener">https://xiongxiaoer.gitbook.io/the-little-bitcoin-book/</a></p>
+</blockquote>
+<h2 id="今天货币的问题"><a href="#今天货币的问题" class="headerlink" title="今天货币的问题"></a>今天货币的问题</h2><h3 id="一个好的货币"><a href="#一个好的货币" class="headerlink" title="一个好的货币"></a>一个好的货币</h3><p>书的这一章，列举了世界上货币出现问题的几个例子，小型国家未来锚定汇率，未来大搞生产，来疯狂的印钞票，导致本国货币产生了恶性的通货膨胀。比如委内瑞拉在2018 年产生了 400000% 的恶性通货膨胀。</p>
+<ol>
+<li>通货膨胀是货币的敌人，2000年来所有的通货对美元的汇率都有了巨大的损失，货币的购买力被稀释。</li>
+<li>20亿人无法获得银行账户，或者缺少开户的身份证明</li>
+<li>监控资本主义（surveillance capitalism）使得隐私的价格越来越高</li>
+</ol>
+<hr>
+<p>货币是一种社会协议，货币是交易的润滑剂，其价值是使用者的信任产生的。</p>
+<blockquote>
+<p>货币要求人们相信他们钱包里的账单，他们银行账户里的数字以及他们礼品卡里的余额都可以在未来兑换成他们想要或需要的东西. 卖方需要同意买方的钱是有价值的。</p>
+</blockquote>
+<p>货币有非常多种，带式最健全的货币往往是最好的必然 美元以及欧元，他后面的金融体系是十分的完整健壮。</p>
+<p>政府对货币有控制的能力，但是一旦出现货币滥用，对货币体系是致命的打击，比如对财政利好的失控的通膨，任意财产没收，以及腐败。</p>
+<blockquote>
+<p>然而，对货币的控制可能是一种会被滥用的诱人之物。官员经常操纵这种权力来满足他们的利益。只有保护个人权利、权力分立和法治的最民主的政府，才能有效防范货币滥用，如失控的通胀、任意没收以及腐败。</p>
+</blockquote>
+<hr>
+<h3 id="你被通货膨胀了"><a href="#你被通货膨胀了" class="headerlink" title="你被通货膨胀了"></a>你被通货膨胀了</h3><p>政府可以以极低的成本来创造更多的法定货币，<strong>美联储前主席艾伦·格林斯潘（Alan Greenspan）曾说，美国可以“偿还任何债务，因为我们总是可以通过印钞来实现这一目标“</strong>，做法是合理的但是结果必然会失去货币本身的稳定性。所以低而稳定的通货膨胀是现代央行的目标。</p>
+<p>对与生活在专制政权的人来说，政府官员是未经选举产生，所以大多数人们无法选择自己的利益方向（选择执政者的利益主张），他们的储蓄价值会不断减少的。只有精英阶层才能的到美元，黄金或者房产这种硬通货来实现财富的保值。与此同时，在富裕民主的国家人民可以轻松的获得稳定的货币，来投资理财产品，来抵消或者超过通货膨胀。</p>
+<p>对与新印的钱，精英们不成比例的受益，被称为 <strong>坎蒂隆效应</strong>，因为精英阶层都有用硬通货财富来实现资产的保值，但是都已普通民众大多数的资产是以储蓄形式出现，所以大规模的通货膨胀，是一种不公平的财富分配，民众手上的钱急剧贬值且没有硬通货来进行资产保值。<strong>所以普通民众是通货膨胀中的必然牺牲品</strong></p>
+<p>在战争阶段，使用不断的印钱来提供战时所需资金，在一战之后之后俄国和德国均停止了金本位，而且暂停了货币兑换，开始进行无黄金支撑印钞。</p>
+<p>战败后，回来支付巨额赔款，德国只能去印更多的钱，导致马克贬值到了其战前价值的万亿分之一。</p>
+<blockquote>
+<p>法定货币体系也是现代长期战争的推动者。政府可以为战争印更多的钱，通过通胀把成本分摊在后代身上。</p>
+</blockquote>
+<h3 id="货币其他的问题"><a href="#货币其他的问题" class="headerlink" title="货币其他的问题"></a>货币其他的问题</h3><p>现在的货币问题还有，各个国家之间的资金转移极其困难，<strong>中国，俄罗斯，阿根廷，印度尼西亚等政府都积极的限制公民的外币兑换</strong> 。在金融危机之后避免银行破产，公民被限制每天的取款额度，国际汇款的大额的手续费用以及关税。450/7000</p>
+<h3 id="全球的单点故障"><a href="#全球的单点故障" class="headerlink" title="全球的单点故障"></a>全球的单点故障</h3><p>现在世界经济使用的是美元本位的体系，书中写道这个是即使是 <strong>布雷顿森林协定</strong> 确定的，所以现在的国际贸易最终使用美元来进行结算。</p>
+<blockquote>
+<p>随着第二次世界大战即将结束，全球大国在布雷顿森林举办了一场聚会来建立统一的货币秩序。在三周的时间里，来自44个国家的700多名代表就未来金融体系的结构进行了辩论和谈判。一些代表建议建立一种名为班科（bancor）的新国际储备货币。最后，代表们同意他们的货币将与美元挂钩。因此，今天的国际贸易主要以美元结算，每个国家都试图维持他们的美元储备。</p>
+</blockquote>
+<p>所以虽然美元经济体看似稳定，但是如果其运行出现问题，少数银行倒闭，就有可能出现全球性的经济灾难。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>目前的货币体系存在问题，通膨导致的不对称财富分配以及货币体系消亡，货币自由受制于政府，目前是美国为主的全球单点体系，越来越多的数字支付系统可能会导致个人隐私的消亡。</p>
+<blockquote>
+<p>四种全球现象——个人财富的贬值、价值转移的限制、金融中心化和隐私的丧失——代表了个人在 21 世纪货币体系中的主要风险。随着各国努力维持现状，世界各地的人们都感受到了压力</p>
+</blockquote>
+<p>所以需要一个新的货币体系，政府没有能力牺牲公民财富了随意的贬值货币，交易不在受制于任何体系或人，货币可以被世界上任何地方使用和访问。于是就有了 标题中的 bitcoin。</p>
+<h2 id="为什么比特币"><a href="#为什么比特币" class="headerlink" title="为什么比特币"></a>为什么比特币</h2><p>雷曼事件，著名投资银行，雷曼兄弟由于投资失败申请了美国历史上最大的破产案。其提供借贷，但风险远远的大于其抵押的担保证券的总价值，当有贷款违约之后，公司就无法偿还其用于借贷的债务导致破产。所以导致了信贷的信用灾难，银行不敢再将钱贷给各大公司，而公司又没有钱来继续经营，引起了金融系统的恶性循环。</p>
+<p>所以美国财政部以及美联储，立马拨钱给银行来维持银行可贷款出去的量来避免经融危机，这次的行为花费了数千亿的美元来支撑。</p>
+<h3 id="比特币的出现"><a href="#比特币的出现" class="headerlink" title="比特币的出现"></a>比特币的出现</h3><p>比特币伴随着这样一条新闻出现的：</p>
+<blockquote>
+<p>The Times 03/Jan/2009 Chancellor on brink of second bailout for banks</p>
+<p>（泰晤士报 2009年1月3日 总理即将面临银行第二轮救助计划）</p>
+</blockquote>
+<p>这一条新闻被永远的写在了bitcoin的创世区块里面，</p>
+<blockquote>
+<p>中本聪向全世界传达的信息是，以牺牲人民为代价救助银行的现有体系破产了。比特币的去中心化金融技术是一条出路。</p>
+</blockquote>
+<h3 id="稀缺性"><a href="#稀缺性" class="headerlink" title="稀缺性"></a>稀缺性</h3><p>一个东西如果有价值，那么它必须有稀缺性，空气虽然人们必须，但是普天皆是，所以没有什么价值。</p>
+<p>稀缺性有两种形式，人造稀缺性，限量版汽车；以及自然稀缺性，珍珠。</p>
+<p>使用盐，黄金等去中心化且稀缺的商品作为货币并不是巧合，没有个人以及团体控制商品是公平的，其次自然生成难以伪造。稀缺性保证价值，携带适量来进行交易。</p>
+<p>两种不同形式的稀缺性的区别在于能否被控制，有中心化稀缺以及去中心化稀缺</p>
+<blockquote>
+<p>在黄金的情况下，其积累在历史上不需要矿主之外的任何人的许可。换句话说，没有一个中心是所有黄金都诞生于此，也没有全球权威有权限制挖矿或增加供应。</p>
+<p>每个中心化商品都面临同样的激励问题。中央权威可以创造更多的这种商品，稀释所有其他所有者的价值。印出更多货币的央行通常会为这种行为制定积极有益的社会目标，如建设社会基础设施，支持社会福利计划或稳定经济危机。但是，回想一下第1章的坎蒂隆效应：即使合理使用这种权力，也会牺牲穷人和无权者，为富人和当权者带来好处。印钱的能力造成了一种道德风险。</p>
+</blockquote>
+<hr>
+<p>黄金的分布式稀缺性造就了其现在优秀稳定的价值，但是其缺点在于，物理性，以及质量，其存储安全以及转移，都面临着极大的挑战。</p>
+<p>所以btc在可以实现黄金的分布式稀缺性的基础上，由于其是数字化的也解决了运输和安全存储的问题。</p>
+<hr>
+<h3 id="比特币的稀缺性"><a href="#比特币的稀缺性" class="headerlink" title="比特币的稀缺性"></a>比特币的稀缺性</h3><p>货币的数字化来消除物理专一的需要，这是现代电子业务的必要创新。</p>
+<blockquote>
+<p>中本聪在2008年10月31日发布了一项突破，提出了比特币这种新的数字货币，其稀缺性源于数字领域中存在稀缺物品的事实：稀有数字。</p>
+</blockquote>
+<p>比如素数就是数学中的稀缺资源。在比特币前的资产，要不就完全中心化（游戏币），实物的（黄金），无限丰富（图片/mp3）。</p>
+<blockquote>
+<p>比特币之前根本不存在去中心化的、数字的和稀缺的资产。</p>
+</blockquote>
+<hr>
+<p>比特币通过挖矿来寻找稀有数字，来保证了稀缺性，寻找这个数字需要花费大佬的工作。它是去中心的稀缺的，每个人都可以来挖掘它，</p>
+<h3 id="比特币交易运作"><a href="#比特币交易运作" class="headerlink" title="比特币交易运作"></a>比特币交易运作</h3><p>btc使用的是UTXO的模型，结合 RSA技术 来实现加密以及签名，内容就不讲了。</p>
+<h3 id="比特币货币政策"><a href="#比特币货币政策" class="headerlink" title="比特币货币政策"></a>比特币货币政策</h3><p>btc的货币政策是代码写好的的，产量每四年减半，到2020年的话每个区块奖励 6.25 btc。</p>
+<p>有效区块被加入链中，无效的区块广播被reject掉，浪费了造假的成本。</p>
+<h3 id="说说区块链"><a href="#说说区块链" class="headerlink" title="说说区块链"></a>说说区块链</h3><p>BTC 的出现带来了区块链技术，</p>
+<blockquote>
+<p>不幸的是，到目前为止，大多数这些尝试都相当于开叉车去杂货店购物。该车辆在其原始环境中完美运行（存储去中心化数字货币的账本），但对于其现代应用来说似乎太慢且有不必要地浪费，（譬如区块链上的医疗保健记录、在区块链上追踪农产品来源、把天气数据放上区块链等）。</p>
+</blockquote>
+<p>比特币四个重要的组成部分，</p>
+<ol>
+<li>比特币是稀缺的，</li>
+<li>比特币网络是去中心的点对点网络</li>
+<li>工作量证明机制，保证稀缺性</li>
+<li>完全公开审查</li>
+</ol>
+<p>对与比特币这种有稀缺性的资产，使用区块链作为公共记录是有用的。但是用来记载其他信息，发票等等，其处于疏忽输入错误，或者是彻头彻尾错误，使用区块链就没有什么作用了，因为还是需要一个中央权威来保证所有的信息可靠，这样就失去了区块链的需求。</p>
+<h3 id="其他的币种"><a href="#其他的币种" class="headerlink" title="其他的币种"></a>其他的币种</h3><p>这一部分比较有意思</p>
+<blockquote>
+<p><strong>Bitconnect</strong>（缩写：BCC）被认为是<a href="https://zh.wikipedia.org/wiki/加密货币" target="_blank" rel="noopener">加密货币</a>界中最著名的<a href="https://zh.wikipedia.org/w/index.php?title=高收益投资&action=edit&redlink=1" target="_blank" rel="noopener">高收益投资</a><a href="https://zh.wikipedia.org/wiki/龐茲騙局" target="_blank" rel="noopener">庞氏骗局</a>之一，宣称每日可得到1%的报酬率<a href="https://zh.wikipedia.org/wiki/Bitconnect#cite_note-2" target="_blank" rel="noopener">[a]</a><a href="https://zh.wikipedia.org/wiki/Bitconnect#cite_note-Wieczner-3" target="_blank" rel="noopener">[2]</a>。2018年1月16日，Bitconnect平台关闭，其货币价值暴跌，并于2018年8月10日后，终止任何交易。</p>
+</blockquote>
+<p>关于其他的币种，自称是BTC的分支链或者解决了btc遇到的某一点问题的币，作者的态度是这样的，<strong>厚颜无耻的方式</strong></p>
+<blockquote>
+<p>有几个团体试图以特别厚颜无耻的方式复制中本聪的成功，并创造出了几种名称中包含比特币一词的加密货币。因此，对于哪种加密货币是真正的比特币，人们经常搞混。要区分它们，请在交易所和钱包里查找代码BTC。比特币的变种就像是愚人金；它们可能看起来相似，但更中心化，价格更低。这些包括比特币现金（Bitcoin Cash，BCH），比特币黄金（Bitcoin Gold，BTG）和比特币中本聪愿景（Bitcoin Satoshi’s Vision，BSV）。</p>
+</blockquote>
+<h2 id="比特币的价格和波动性"><a href="#比特币的价格和波动性" class="headerlink" title="比特币的价格和波动性"></a>比特币的价格和波动性</h2><p>这一节有意思，来钱的要好好看看。</p>
+<p>在长线来看，比特币和黄金比较，其市值占比只有黄金的 2%。</p>
+<blockquote>
+<p>随着比特币接受度的增加以及比特币作为全球资产类别的增长，其波动性将会下降。这可能需要几十年的时间。</p>
+</blockquote>
+<p>中期层面上，影响比特币价格的因素是减半（halving），减半导致波动性剧增的供应断崖。</p>
+<blockquote>
+<p>不断上涨的比特币价格往往吸引更多的投机者，从寻求购买价值100美元价值比特币的零售投资者，到购买价值数百万美元的机构投资者。反过来，这会推高比特币的价格，因为媒体的关注以及对错过机会的的恐惧会加剧这种心态。这种动态创造出大量的价格泡沫，最终价格可能崩溃80％或更多。这些价格周期很有可能在未来减半的前后继续下去。</p>
+</blockquote>
+<h2 id="比特币关于人权"><a href="#比特币关于人权" class="headerlink" title="比特币关于人权"></a>比特币关于人权</h2><p>在人权方面，书中主要提到的有，躲避通膨，每个人都可以有，方便转账到世界的任意角落，防止由经第三方导致转账流程过度复杂。</p>
+<p>无现金社会是以后的趋势，但是为了避免金融行为被追踪，btc是一个可靠的避免监控操作的方案，个人在付款时不需要透露他们的身份。</p>
+<p>闪电网络通过记录部分的交易数据来实现区块容量固定的情况下来实现tps的提升。</p>
+<h2 id="比特币的未来畅想"><a href="#比特币的未来畅想" class="headerlink" title="比特币的未来畅想"></a>比特币的未来畅想</h2><p>无边界经济兴趣，现在国家掌握了掌控了经济以及贸易。btc会代替法币作为一个统一快速的结算方案来代替法币。</p>
+<p>国际通过增发货币来资助战争的能力会被收到限制，战争的发动将会变得更加困难。</p>
+<blockquote>
+<p>独裁政权不会悄然消失，但他们将被迫做出选择：面对大规模资本外逃, 还是允许更多的自由。感谢互联网，自由文学和电影作品现在可以出现在生活在厄立特里亚和朝鲜等最暴虐政权之下的家庭中。随着可以与信息一样通过互联网无缝安全传输的货币的出现, 这种现象将会被大大加速。</p>
+</blockquote>
+<p>大多数的精英将自己的财富存储在房产，股票，和贵金属中。在比特币的世界里，更少的人会在一个城市大量的购买住房而不居住。在国外购买稳定房产就不再有吸引力，房价不会飙升，人们在自己的城市买的起房子。</p>
+<p>金融行为的监控难度提升。</p>
+<p><a href="https://xiongxiaoer.gitbook.io/the-little-bitcoin-book/zi-wo-zhu-quan-de-kai-shi" target="_blank" rel="noopener">自我主权的开始</a> 这部分写了作者对于金融自主的畅想</p>
+<p>热河基础技术都遵守接受曲线(adoption curve)，一开始有很多怀疑论者，曲线上升呈现一个S形，到最后任何人任何地点都可以充分的餐椅包比特币里面来。</p>
+<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><blockquote>
+<p>因此，比特币的任何变化都需要达成共识。从这个意义上讲，比特币治理模式类似于具有制衡机制的民主系统。矿工就像政府的行政部门，处理日常事务运营和执行规则；开发者就像立法部门，制定和通过新法律；（全节点客户端的）用户是司法部门，确保其他两个部门不做任何违宪的事情。</p>
+</blockquote>
+<p>这一部分列举了很多问题，基础问题，直接给链接了想看时候再去看看</p>
+<blockquote>
+<p><a href="https://xiongxiaoer.gitbook.io/the-little-bitcoin-book/bi-te-bi-wen-da" target="_blank" rel="noopener">比特币问答</a></p>
+</blockquote>
+<h2 id="自己的话"><a href="#自己的话" class="headerlink" title="自己的话"></a>自己的话</h2><p>这本书很有意思是8个人在四天之内写出来的，从经济学的方面解释了比特币的优势以及进行未来展望，读完之后更加充满希望做长线。hhh</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/02/09/e8-af-bb-e4-b9-a6-e7-ac-94-e8-ae-b0-e3-80-8athe-little-bitcoin-book-e3-80-8b/" data-id="ckb3umkhs00ehq4ta1zr7d8l3" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BlockChain/">BlockChain</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/bitcoin/">bitcoin</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-202001-e6-9c-88-e5-ba-a6-e6-80-bb-e7-bb-93" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/02/07/202001-e6-9c-88-e5-ba-a6-e6-80-bb-e7-bb-93/" class="article-date">
+  <time datetime="2020-02-07T14:00:19.000Z" itemprop="datePublished">2020-02-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/写点题外话/">写点题外话</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/02/07/202001-e6-9c-88-e5-ba-a6-e6-80-bb-e7-bb-93/"># 202001 月度总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>一直有想写点东西的冲动，本来每周都会有一篇分享？到底自己还是没有坚持下来 偷偷所以告诉自己尽早放弃也是一种优势，说明这种方式不适合自己？ 最后想想，还是写个月度的总结，一个月一篇，这个月不想写下个月补上。一个月十二篇帖子自己应该坚持的下来</p>
+<h2 id="工作的事情"><a href="#工作的事情" class="headerlink" title="工作的事情"></a>工作的事情</h2><p>有个同事要在2月底就离开了，在走之前，约着我在公司周围的路上转了转。说了蛮多东西。让我对自己的处境有了了解，也印证了自己的心中的一些想法。 先写写我心里想的东西，一个大公司给你带来什么？ 正如很多人讲的一样，大公司里的螺丝钉，因为体量太大了，很多时候发现很难找到自己的定位，就是可能做一些dirty job，不像做一些小项目，看见一个原型会很有成就感的样子。所以时不时的总会有一种需要去找自己的目标的感觉，做些事情也没有什么迎面而来的成就感。所以我就在想，我将会在一个体量巨大的公司内得到什么东西。我找到了下面的几个可能的答案：</p>
+<ul>
+<li>健全的行政体制</li>
+<li>完备的知识库</li>
+<li>数量多（且健全）共有基础组件</li>
+<li>内部大牛的知识分享</li>
+</ul>
+<p>这里引用一段知乎上看到的话，和和我心里想的差不多</p>
+<blockquote>
+<p>大公司的好处是平台优势, 只要用心总能学到很多成熟的体系比如项目管理、标准、方法论等等, 另外很多公司还提供内部换岗的机会, 帮助你成长；缺点也很明显, 待久了容易有温水煮青蛙的感觉, 另外提升机会总是有限的。</p>
+</blockquote>
+<p>所以，在工资的阶段，需要去重点的挖掘这几个层面上知识和内容，这些东西尽可能多的转化为自己的。从而把这段经历作为对自己的投资，<strong>选择比努力更重要，选择一份工作的话，最好给你一个专注的领域来锻炼自己的核心的竞争力。这样才能立于不败之地</strong></p>
+<hr>
+<p>下面这段是同事在路上说的话，回去想了想，做了些总结。</p>
+<blockquote>
+<p>在工作的选择的时候，要选择有希望有生命力的产品以及团队。 要走的话，也最好带够一年半在想着去换一个其他的地方，给自己的履历里面添上美丽的一笔。 工作了圈子很重要，你的下一份工作很有可能是你的上一位同事提供给你的。</p>
+</blockquote>
+<h2 id="过年什么感觉"><a href="#过年什么感觉" class="headerlink" title="过年什么感觉"></a>过年什么感觉</h2><p>在今年的过年期间，疫情还没有到现在这种令人恐惧的样子吧。自己在外工作了一年，<strong>回到家，亲戚之间发现虽然是熟悉的面庞，但是明显感觉到，心有些远了</strong>，想说什么，又说不出什么东西，每当亲戚问起来，从事什么工作之后，答曰IT，之后就不怎么呢问下去了。所以有时候想到其实不是自己的心远了，可能是环境远了？ 现在每年感觉年味越来越淡了，我觉得？在几年或者十年之后吧，会出现朋友比亲戚关系更加紧密的现状？在过年的时候，可能更加希望和朋友之间来聚一聚？我不知道。</p>
+<h2 id="又遇到了大事件"><a href="#又遇到了大事件" class="headerlink" title="又遇到了大事件"></a>又遇到了大事件</h2><p>我想着写了个比较有意思的东西，这件如果再发生了你该做些什么从而可以像个聪明人</p>
+<pre><code>如果你听到 突然想写一个很有意思的内容，如果你听到有某种不明原因爆发，既然它能爆发，就已经超过我们能控制的范围了 技术范围，舆论范围  这时候去买： 口罩      大量，可卖 基础药品    奥司他韦/免疫球蛋白类似 酒精喷壶    75 酒精 医疗主题    股票 过氧乙酸    范围杀毒 泡面 瓶装水  卖： 展览主题    股票 旅游主题    股票 航空主题 高铁主题  当疫情展开之后： 买美元，期间人民币的汇率会大幅度的下跌 关注黄金和比特币，由于恐慌趋势会有大幅度上涨 A股会有断崖式的下跌，开盘当天，抄底上车。大约在第三天，个股开始下跌之时，卖掉小盘股，买入体量大的银行以及券商。</code></pre><h2 id="搞不好病毒也是他们放的"><a href="#搞不好病毒也是他们放的" class="headerlink" title="搞不好病毒也是他们放的"></a>搞不好病毒也是他们放的</h2><p>下面这段话，是我回复一个说：”美国怎么怎么样对我们，搞不好病毒也是他们放的“ 的观点的一段话</p>
+<blockquote>
+<p>何必这样呛我呢？美国是自由媒体，怎能写报告人们看得多他就怎么写，甚至公然抨击总统都无所谓，言论自由是受到保护的，看开些吧。在不知道这个前提下，一个媒体就能代表美国，这点事我们断章取义了，没办法。在港台地区，最多的节目就是政论节目，把各种事件拉出来，评价这个评价这个，人们都知道自己是看个热闹。清醒些吧，不要这么敏感，心中有了世界的概念，才能客观的看待任何东西。 你看，文章圈起来对日本的态度，你在看看现在对美国的态度，不要忘了，我们曾经是怎么同仇敌忾去反对日货，砸日本车。不要轻易地被媒体煽动了，这种煽动太容易了，日本送来口罩，日本好。美国带来特效药，美国不好吗？ 你们的态度只是媒体让你们展现的态度罢了。我们的互联网属于极度的信息不对称的情况，我们只能看到他们想让我们看到的东西，知道这点就好了，不要被一个个冲击眼球的大字报带着着方向。</p>
+</blockquote>
+<p>引用《乌合之众》：</p>
+<blockquote>
+<p>群体只会干两种事——锦上添花或落井下石</p>
+</blockquote>
+<h2 id="快去买双黄连"><a href="#快去买双黄连" class="headerlink" title="快去买双黄连"></a>快去买双黄连</h2><p>可能在2月3号吧，记不清具体的时间了，在人民日报的官方发了一篇文章，标题 <strong>《上海药物所、武汉病毒所联合发现中成药双黄连口服液可抑制新型冠状肺炎病毒》</strong> ，文章刚刚出来，在各大媒体上相继曝光。特别的中年人群的朋友圈内广为流传。具体的事件就不详细说了，最后面有有标题<strong>《理性购买，预防不是治疗》</strong>来把抢购之风压下去。</p>
+<hr>
+<p>这里的话，不谈论中医究竟是有效无效，是不是有意无意的骗子。单单从这次科研报告来讲，体外测试，有一定效果，这些不严谨的词汇被抱在冲击力强大的标题扑面而来。 在电影《流感》里，就有这样的一幕，人本来没有病，谎称自己吃了某种药治好了自己，从而这种药得到热卖。人性导致的结果，每个人都渴望存在这种药。 双黄连治病毒，和碘盐抗感冒一样，都是空穴来风，说简单是被盲目带着走，说复杂是丢掉了人类的智慧。如果碘盐真的抗辐射，这种方法早已经被事件各地普及，因为历史上早已经被无数次的检测有效，何必每次总会向重大发现一样出现呢？所以总结来说：<strong>体制未变，民智不涨</strong> ，这样的局在后面会继续下去。</p>
+<hr>
+<p>另外，站在信息的发布者来想，我觉得他应该是聪明人，聪明人做的事情，我觉得肯定是有意为之。展望整个疫情的现况：医疗机构长时间的拿不出有用的医疗成果，你给民众去讲，这个是新病毒，RNA病毒，搞出疫苗来没那么快，反而会被各种怀疑：平时干什么去了？所以，<strong>长时间的不给出结果，反而对疫区的百姓来说是致命的结果，导致了越来越多的恐慌。所以，医疗机构才会使用这种渐进的方式对外宣部药物利好消息缓解疫区的舆论压力，稳定民情，实际上拖延时间，缓解人们对医疗机构的压力</strong> （<strong>愚蠢之药医愚蠢之人</strong>） 在最后引用《乌合之众》里的一句话：</p>
+<blockquote>
+<p>群众没有真正渴求过真理，面对那些不合口味的证据，他们会充耳不闻…凡是能向他们提供幻觉的，都可以很容易地成为他们的主人；凡是让他们幻灭的，都会成为他们的牺牲品。</p>
+</blockquote>
+<h2 id="炒币赚了点钱"><a href="#炒币赚了点钱" class="headerlink" title="炒币赚了点钱"></a>炒币赚了点钱</h2><p>一月初金融方向不稳定，大选，弹劾，脱欧，各种事情。恐慌指数陡增，黄金走高。btc在支撑位待了太久，看涨。所以小玩一把 1K 开多，现在也已经有6K了，比较开心</p>
+<h2 id="写给一月的话"><a href="#写给一月的话" class="headerlink" title="写给一月的话"></a>写给一月的话</h2><p>这一个月是 2020的开端，理应安静祥和，但是充满着各种不和平的东西。特别是这次的nCov的传播，让这一年从一开始就被载入了史册。这个月，也临近着放春节假，整个人是比较飘飘的，期待着假期的到来。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/02/07/202001-e6-9c-88-e5-ba-a6-e6-80-bb-e7-bb-93/" data-id="ckb3umkby000tq4tadnh4w7o1" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-e7-bf-bb-e4-b9-a6-e7-ac-94-e8-ae-b0-e3-80-8a-e4-ba-ba-e4-ba-ba-e9-83-bd-e8-83-bd-e5-ad-a6-e4-bc-9a-e7-9a-84-wordpress-e5-ae-9e-e6-88-98-e8-af-be-e3-80-8b" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/02/05/e7-bf-bb-e4-b9-a6-e7-ac-94-e8-ae-b0-e3-80-8a-e4-ba-ba-e4-ba-ba-e9-83-bd-e8-83-bd-e5-ad-a6-e4-bc-9a-e7-9a-84-wordpress-e5-ae-9e-e6-88-98-e8-af-be-e3-80-8b/" class="article-date">
+  <time datetime="2020-02-05T13:19:49.000Z" itemprop="datePublished">2020-02-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读本好书/">读本好书</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/02/05/e7-bf-bb-e4-b9-a6-e7-ac-94-e8-ae-b0-e3-80-8a-e4-ba-ba-e4-ba-ba-e9-83-bd-e8-83-bd-e5-ad-a6-e4-bc-9a-e7-9a-84-wordpress-e5-ae-9e-e6-88-98-e8-af-be-e3-80-8b/">翻书笔记 《 人人都能学会的 WordPress 实战课》</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>好久没有好好的看一本书了，说明这段日子过的太浮躁。 现在是2020年初，特殊时期，导致了足不出户的现状，人呐闲久了总会想找点事情做。 这片博文算是一篇读书笔记，写的是自己在看 《 人人都能学会的 WordPress 实战课》这本书的过程的一些笔记。东西写的不是十分的高阶，所以就尽快读完写完了。</p>
+<ul>
+<li>文档地址：<a href="https://www.easywpbook.com/" target="_blank" rel="noopener">https://www.easywpbook.com/</a></li>
+<li><a href="http://www.dianbo.org/9238/stone/tiwendezhihui.htm" target="_blank" rel="noopener">提问的智慧</a></li>
+<li><a href="https://coolshell.cn/articles/10804.html" target="_blank" rel="noopener">X-Y Problem</a></li>
+</ul>
+<h2 id="WP基本使用技巧"><a href="#WP基本使用技巧" class="headerlink" title="WP基本使用技巧"></a>WP基本使用技巧</h2><h3 id="站点优化"><a href="#站点优化" class="headerlink" title="站点优化"></a>站点优化</h3><ul>
+<li><p>动静分离，静态文件与冬天文件进行分离，比如静态文件放在 COS 上进行托管</p>
+</li>
+<li><p>图片压缩来进行加载提速<code>Compress JPEG &amp;PNG image</code>作为一个图片统一压缩的插件</p>
+</li>
+<li><p>启用站点预加载功能来实现，用户点击的预加载<a href="https://wordpress.org/plugins/instant-articles/" target="_blank" rel="noopener">WordPress Instant Articles</a></p>
+</li>
+</ul>
+<hr>
+<ul>
+<li>使用 nginx 代替 apache 来作为 webserver</li>
+<li>PHP 开启OPCache，使用操作码缓存提升运行速度</li>
+<li>mysql 打开Query Cache，Mysql 查询缓存来提高速度</li>
+</ul>
+<hr>
+<ul>
+<li>对象缓存 使用 Memcached 和 Batcache 进行缓存</li>
+<li>WP Super Cache，html页面缓存</li>
+<li>Super Static Cache 插件来实现页面静态化</li>
+</ul>
+<hr>
+<ul>
+<li>关闭谷歌字体，来提升页面加载速度</li>
+<li>Gravatar头像使用国内cdn 代替</li>
+<li>图片使用LazyLoad</li>
+<li>Smart WordPress 插件来开启 ETag</li>
+</ul>
+<h3 id="安全加固"><a href="#安全加固" class="headerlink" title="安全加固"></a>安全加固</h3><p>一个系统的安全与否与它本身的价值相关</p>
+<ul>
+<li>使⽤邮箱登陆， Email Login</li>
+<li>关闭 XML-RPC</li>
+<li>关闭 JSON Rest API</li>
+</ul>
+<h2 id="WP主题使用以及管理"><a href="#WP主题使用以及管理" class="headerlink" title="WP主题使用以及管理"></a>WP主题使用以及管理</h2><h3 id="快速说明"><a href="#快速说明" class="headerlink" title="快速说明"></a>快速说明</h3><p>前面主题安装使用的部分就直接跳过了。</p>
+<ul>
+<li><p>主题分为 header/footer/siderbar/single 这三大部分</p>
+</li>
+<li><p>在indexphp 的文件中分为 <code>get_header/get_sidebar/get_footer</code> 这三个函数来分辨渲染这三个部分。</p>
+</li>
+<li><p>wp的文章主循环：</p>
+<pre><code>&lt;?php if ( have_posts() ) : ?&gt;
+&lt;?php while ( have_posts() ) : the_post(); ?&gt;
+... Display post content
+&lt;?php endwhile; ?&gt;
+&lt;?php endif; ?&gt;
+
+// 标题 替换为 &lt;?php the_title();?&gt;;
+// 摘要 替换为 &lt;?php the_excerpt();?&gt;;
+// 作者 替换为 &lt;?php the_author();?&gt;;
+// 作者标签的 href 的值替换为 &lt;?php the_author_link();?&gt; 
+// ⽇期 替换为 &lt;?php the_date();?&gt; 
+// 文章的永久链接： &lt;?php the_permalink();?&gt;</code></pre></li>
+</ul>
+<h3 id="文件结构"><a href="#文件结构" class="headerlink" title="文件结构"></a>文件结构</h3><p>WordPress 主题可能会有很多⽂件，不过总体来说可以将它们分为三类：</p>
+<ul>
+<li><p>CSS 样式⽂件和 JS 脚本⽂件：style.css ；</p>
+</li>
+<li><p>函数⽂件：function.php ；</p>
+</li>
+<li><p>模板⽂件：index.php/home.php/single.php/etc.</p>
+</li>
+</ul>
+<hr>
+<p>Wordpress 的每个模块的调用关系在下面的</p>
+<ul>
+<li><a href="https://wphierarchy.com/" target="_blank" rel="noopener">wphierachy</a></li>
+</ul>
+<h3 id="主题开发"><a href="#主题开发" class="headerlink" title="主题开发"></a>主题开发</h3><p>关于页面的功能不仅仅是自己编写的，里面的内容可以使用自己预先使用 php 编写的模板。来实现归档页面，或者友链词云之类的功能。这里我直接 COpy一下书里的一个例子来，对开发的内容来进行说明：</p>
+<pre><code>&lt;?php
+/*
+Template Name: 归档
+*/
+function _PostList($atts = array())
+{
+  global $wpdb;
+  $rawposts = $wpdb-&gt;get_results(&quot;SELECT ID, year(post_date) as post_year, post_date, post_title FROM $wpdb-&gt;
+  posts WHERE post_status = &apos;publish&apos; AND post_type = &apos;post&apos; AND post_password = &apos;&apos; order by post_date desc&quot;);
+    foreach ($rawposts as $post) {
+      $posts[$post-&gt;post_year][] = $post;
+  }
+
+  $rawposts = null;
+  $html = &apos;&lt;div class=&quot;archives-container&quot;&gt;&lt;ul class=&quot;archives-list&quot;&gt;&apos;;
+
+  foreach ($posts as $year =&gt; $posts_yearly) {
+    $html .= &apos;&lt;li&gt;&lt;div class=&quot;archives-year&quot;&gt;&apos; . $year . &apos;年&lt;/div&gt;&lt;ul class=&quot;archives-sublist&quot;&gt;&apos;;
+    foreach ($posts_yearly as $post) {
+      $html .= &apos;&lt;li&gt;&apos;;
+      $html .= &apos;&lt;time datetime=&quot;&apos; . $post-&gt;post_date . &apos;&quot;&gt;&apos; . mysql2date(&apos;m⽉d⽇ D&apos;, $post-&gt;post_date, true) . &apos;&lt;/time&gt;&apos;;
+      $html .= &apos;&lt;a href=&quot;&apos; . get_permalink($post-&gt;ID) . &apos;&quot;&gt;&apos; . $post-&gt;post_title . &apos;&lt;/a&gt;&apos;;
+      $html .= &quot;&lt;/li&gt;&quot;;
+    }
+    $html .= &quot;&lt;/ul&gt;&lt;/li&gt;&quot;;
+  }
+      $html .= &quot;&lt;/ul&gt;&lt;/div&gt;&quot;;
+      return $html;
+}
+
+  function _PostCount()
+  {
+      $num_posts = wp_count_posts(&apos;post&apos;);
+      return number_format_i18n($num_posts-&gt;publish);
+    }
+    get_header();
+?&gt;
+&lt;div class=&quot;row&quot;&gt;
+&lt;div class=&quot;col-sm-12 blog-main&quot;&gt;
+&lt;?php echo _PostList();
+?&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;?php get_footer();?&gt;</code></pre><p>可以在代码的内容看到，这里的页面模板实际上是一个进行数据库查询，之后把结果在页面上进行渲染的功能，这里的输出内容是直接使用的html 来进行拼接生成。</p>
+<hr>
+<p>另外一个简单的例子是实现一个标签云，来实现文章的tag统一展示。</p>
+<pre><code>&lt;?php
+/*
+Template Name: 标签云
+*/
+get_header();?&gt;
+&lt;div class=&quot;row&quot;&gt;
+    &lt;div class=&quot;col-sm-12 blog-main&quot;&gt;
+     &lt;?php wp_tag_cloud(&quot;smallest=20&amp;largest=50&amp;unix=px&amp;number=200&quot;);?&gt;
+     &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+&lt;?php get_footer();?&gt;</code></pre><p>这里是直接使用 的Wordpress的内置函数，来实现一个标签云。</p>
+<hr>
+<p><a href="https://generatewp.com/generator/" target="_blank" rel="noopener">GenerateWP</a> 可以直接生成一些常用的 wordpress的代码，</p>
+<h2 id="WP插件开发"><a href="#WP插件开发" class="headerlink" title="WP插件开发"></a>WP插件开发</h2><h3 id="WP运行机制"><a href="#WP运行机制" class="headerlink" title="WP运行机制"></a>WP运行机制</h3><p>从 <code>index.php</code> 文件开始 加载 <code>wp-blog-header.php</code> ,再加载 <code>wp-load.php</code> h和 <code>template-loader.php</code> , 继续加载 <code>wp-config.php</code> 之后是 <code>wp-settings.php</code> ，</p>
+<p>在 setting 里面对已启用的插件来进行加载。</p>
+<hr>
+<p>插件是通过Wordpress提供的API函数来实现继承的，之间的耦合挺弱的，相关的函数可以在 <code>wp-includes/plugin.php</code> 中来看到API函数，类似于HOOK的方法，来hook到每个动作上去。</p>
+<p>其中的hook分 <code>action/filter</code> ，前者勾动作消息后执行，后者是接到消息处理。</p>
+<ul>
+<li>do_action/add_action <a href="https://codex.wordpress.org/Plugin_API/Action_Reference" target="_blank" rel="noopener">action 列表</a></li>
+<li>apply_filters/add_filter <a href="https://codex.wordpress.org/Plugin_API/Filter_Reference" target="_blank" rel="noopener">filter列表</a></li>
+</ul>
+<hr>
+<h3 id="配置项目入库"><a href="#配置项目入库" class="headerlink" title="配置项目入库"></a>配置项目入库</h3><pre><code>/**
+* 初始化设置项
+*/
+function gitchat_copyright_activate() {
+    add_option(&apos;gitchat_copyright_code&apos;,&apos;&lt;hr&gt;&lt;p&gt;这是⼀个来⾃ GitChat 达⼈课的插件&lt;/p&gt;&lt;hr&gt;&apos;);
+}
+register_activation_hook(__FILE__,&apos;gitchat_copyright_activate&apos; );
+
+// 在插件应用数据库的值的时候
+$content .= get_option(&apos;gitchat_copyright_code&apos;);</code></pre><h3 id="短代码插件"><a href="#短代码插件" class="headerlink" title="短代码插件"></a>短代码插件</h3><p>shortCode 这里可以理解为一个洪，允许用户插入在页面中的地方，之后会在渲染页面的时候会自动的进行替换。</p>
+<pre><code>// 不带参数与内容
+// [git]
+function gitchat_git_shortcode() {
+    return &quot;Hello World&quot;;
+}
+add_shortcode( &apos;git&apos;, &apos;gitchat_git_shortcode&apos; );
+
+// 带参数与内容
+[git id=&apos;222&apos; title=&apos;jah&apos;]this is a test[/git]
+function gitchat_git_shortcode( $atts , $content = null ) {
+  $atts = shortcode_atts(array(
+    &apos;id&apos; =&gt; &apos;1&apos;,
+    &apos;title&apos; =&gt; &apos;hahaha&apos;,
+    ),$atts,&apos;git&apos;);
+  return $atts[&apos;id&apos;].&quot;__&quot;.$atts[&apos;title&apos;].&quot;---&quot;.$content;
+}
+
+// 使用 [git] 来使用短代码</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/02/05/e7-bf-bb-e4-b9-a6-e7-ac-94-e8-ae-b0-e3-80-8a-e4-ba-ba-e4-ba-ba-e9-83-bd-e8-83-bd-e5-ad-a6-e4-bc-9a-e7-9a-84-wordpress-e5-ae-9e-e6-88-98-e8-af-be-e3-80-8b/" data-id="ckb3umkdg003kq4tae8y6dj9s" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/wordpress/">wordpress</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-newspaper-e6-ad-a3-e6-96-87-e6-8f-90-e5-8f-96-e5-b7-a5-e5-85-b7" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/02/02/newspaper-e6-ad-a3-e6-96-87-e6-8f-90-e5-8f-96-e5-b7-a5-e5-85-b7/" class="article-date">
+  <time datetime="2020-02-02T15:46:15.000Z" itemprop="datePublished">2020-02-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/DEV/">DEV</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/02/02/newspaper-e6-ad-a3-e6-96-87-e6-8f-90-e5-8f-96-e5-b7-a5-e5-85-b7/">Newspaper 正文提取工具</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近想做一个文章的统一检索，但是发现对正文很难进行统一的提取，所以就在 github 上去找轮子。</p>
+<p>找了很久，终于找到一个合适的，可以进行页面的正文提取，这样就可以抓取里面的文章的内容，并且进行入库。</p>
+<hr>
+<p>项目地址：<a href="https://github.com/codelucas/newspaper" target="_blank" rel="noopener">https://github.com/codelucas/newspaper</a></p>
+<p>项目文档：<a href="https://newspaper.readthedocs.io/en/latest/" target="_blank" rel="noopener">https://newspaper.readthedocs.io/en/latest/</a></p>
+<hr>
+<p>其使用的依赖项目在git的说明里面已经给出了，基本到了上手直接使用的级别。</p>
+<p>自己本来是打算最终打包成一个 docker 镜像的，但是由于家里的网实在不好，在 <code>pip install</code>的过程中老是因为链接超时失败。然后去 docker hub 上去搜了一下，发现已经有了 <code>newspaper-api</code> 这个项目，提供了文件解析的API级别的服务</p>
+<ul>
+<li><a href="https://hub.docker.com/r/smarp/newspaper-api" target="_blank" rel="noopener">https://hub.docker.com/r/smarp/newspaper-api</a></li>
+</ul>
+<p>到时候直接使用就OK，但是看了一下代码，好像是没有返回正文抓取的内容不开心，后面加上吧。</p>
+<ul>
+<li><a href="https://github.com/Smarp/newspaper-api/blob/cb6f2d21028579d4f084361f3b7879a38be904d2/src/server.py#L102" target="_blank" rel="noopener">https://github.com/Smarp/newspaper-api/blob/cb6f2d21028579d4f084361f3b7879a38be904d2/src/server.py#L102</a></li>
+</ul>
+<hr>
+<p>具体的思路也是使用 API的方法来提供网页的解析服务，这里贴一下核心代码：</p>
+<h3 id="Server服务部分"><a href="#Server服务部分" class="headerlink" title="Server服务部分"></a>Server服务部分</h3><pre><code>route_map = {
+    &apos;/q&apos;:cgifunc.content_extract,
+    &apos;/q_s&apos;: cgifunc.page_extract,
+}
+
+def application(environ, start_response):
+    environ[&apos;PATH_INFO&apos;] = &apos;/&apos; + environ[&apos;PATH_INFO&apos;].split(&apos;/&apos;)[-1]
+    print(environ[&apos;PATH_INFO&apos;])
+    if environ[&apos;PATH_INFO&apos;] in route_map:
+        start_response(&apos;200 OK&apos;, [(&apos;Content-Type&apos;, &apos;text/html&apos;)])
+        resp=route_map[environ[&apos;PATH_INFO&apos;]](environ)
+    else:
+        start_response(&apos;404 NOT FOUND&apos;, [(&apos;Content-Type&apos;, &apos;text/html&apos;)])
+        return &quot;&quot;
+    if not resp:
+        return [b&apos;Hello!&apos;]
+    else:
+        if type(resp) == type(&apos;&apos;):
+            resp = [resp.encode()]
+        return resp
+
+if __name__ == &apos;__main__&apos;:
+    httpd = make_server(&apos;&apos;, 18000, application)
+    print(&apos;Serving HTTP on port 18000...&apos;)
+    httpd.serve_forever()</code></pre><h3 id="解析Handle部分"><a href="#解析Handle部分" class="headerlink" title="解析Handle部分"></a>解析Handle部分</h3><pre><code>def content_extract(environ):
+    if environ[&apos;REQUEST_METHOD&apos;] == &quot;GET&quot;:
+        logging.info(&apos;post update&apos;)
+        try:
+            request_body_size = int(environ.get(&apos;CONTENT_LENGTH&apos;, 0))
+        except (ValueError):
+            request_body_size = 0
+        request_body = environ[&apos;wsgi.input&apos;].read(request_body_size)
+        params = dict(urllib.parse.parse_qsl(environ[&apos;QUERY_STRING&apos;]))
+        print(params)
+        try:
+            page_url = params[&apos;url&apos;]
+        except KeyError as e:
+            print(repr(e))
+            return repr(e) 
+        try:
+            article = Article(page_url,keep_article_html=True)
+            article.download()
+            article.parse()
+            article.nlp()
+            resp = {
+                &quot;title&quot;: article.title,
+                &quot;authors&quot;: article.authors,
+                # &quot;keywords&quot;: [i for i in article.keywords if len(i)&lt;16],
+                &quot;keywords&quot;: article.keywords,
+                &quot;summary&quot;: article.summary,
+                # &quot;html&quot;: article.html,
+                &quot;text&quot;: article.text,
+                &quot;article_html&quot;: article.article_html,
+            }
+            try:
+                resp[&quot;publish_date&quot;] = article.publish_date.strftime(&apos;%Y-%m-%d %H:%M:%S&apos;)
+            except Exception as e:
+                resp[&quot;publish_date&quot;] = datetime.now().strftime(&apos;%Y-%m-%d %H:%M:%S&apos;)
+            print(resp[&apos;title&apos;],resp[&apos;authors&apos;],len(resp[&apos;article_html&apos;]))
+            resp = json.dumps(resp)
+        except Exception as e:
+            print(repr(e))
+            return repr(e) 
+        return resp</code></pre><h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><pre><code>FROM python:3.7.6-alpine3.10
+ENV LANG C.UTF-8
+COPY ./requirements.txt /tmp/./requirements.txt
+
+RUN pip3 install -r /tmp/./requirements.txt
+EXPOSE 18000
+COPY ./webhook.py /home/app/
+CMD [&quot;python&quot;, &quot;/home/app/webhook.py&quot;]</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/02/02/newspaper-e6-ad-a3-e6-96-87-e6-8f-90-e5-8f-96-e5-b7-a5-e5-85-b7/" data-id="ckb3umkei006uq4ta6futsyxz" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+  </nav>
 
 </section>
         
           <aside id="sidebar">
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/DEV/">DEV</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OP之路/">OP之路</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/OP之路/日记？/">日记？</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/OP之路/读本好书/">读本好书</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/写点题外话/">写点题外话</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/日记？/">日记？</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/每周分享/">每周分享</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/玩点什么/">玩点什么</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/读本好书/">读本好书</a></li></ul>
+    </div>
+  </div>
+
 
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bash/">Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlockChain/">BlockChain</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Book/">Book</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DNS/">DNS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ELK/">ELK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Golang/">Golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HA/">HA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/">Jenkins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/K8S/">K8S</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LB/">LB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OPS/">OPS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Prometheus/">Prometheus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SourceCode/">SourceCode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swarm/">Swarm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web/">Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bitcoin/">bitcoin</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cache/">cache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/crawler/">crawler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cryptocurrency/">cryptocurrency</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dev/">dev</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elasticsearch/">elasticsearch</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/faas/">faas</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/helm/">helm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/istio/">istio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kubernetes/">kubernetes</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/logstash/">logstash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/misc/">misc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/monitor/">monitor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network/">network</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/proxy/">proxy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rpi/">rpi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/snippet/">snippet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/traefik/">traefik</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wordpress/">wordpress</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/创业/">创业</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/服务日志/">服务日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/树莓派/">树莓派</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/浪漫星空/">浪漫星空</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/软件工程/">软件工程</a></li></ul>
+    </div>
+  </div>
+
 
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Bash/" style="font-size: 11px;">Bash</a> <a href="/tags/BlockChain/" style="font-size: 10px;">BlockChain</a> <a href="/tags/Book/" style="font-size: 17px;">Book</a> <a href="/tags/DNS/" style="font-size: 10px;">DNS</a> <a href="/tags/Docker/" style="font-size: 20px;">Docker</a> <a href="/tags/ELK/" style="font-size: 14px;">ELK</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/HA/" style="font-size: 12px;">HA</a> <a href="/tags/Jenkins/" style="font-size: 10px;">Jenkins</a> <a href="/tags/K8S/" style="font-size: 16px;">K8S</a> <a href="/tags/LB/" style="font-size: 10px;">LB</a> <a href="/tags/Linux/" style="font-size: 18px;">Linux</a> <a href="/tags/Nginx/" style="font-size: 19px;">Nginx</a> <a href="/tags/OPS/" style="font-size: 20px;">OPS</a> <a href="/tags/Prometheus/" style="font-size: 11px;">Prometheus</a> <a href="/tags/SourceCode/" style="font-size: 10px;">SourceCode</a> <a href="/tags/Swarm/" style="font-size: 10px;">Swarm</a> <a href="/tags/Web/" style="font-size: 13px;">Web</a> <a href="/tags/bitcoin/" style="font-size: 11px;">bitcoin</a> <a href="/tags/cache/" style="font-size: 11px;">cache</a> <a href="/tags/crawler/" style="font-size: 10px;">crawler</a> <a href="/tags/cryptocurrency/" style="font-size: 10px;">cryptocurrency</a> <a href="/tags/dev/" style="font-size: 10px;">dev</a> <a href="/tags/elasticsearch/" style="font-size: 13px;">elasticsearch</a> <a href="/tags/faas/" style="font-size: 10px;">faas</a> <a href="/tags/git/" style="font-size: 12px;">git</a> <a href="/tags/helm/" style="font-size: 11px;">helm</a> <a href="/tags/istio/" style="font-size: 10px;">istio</a> <a href="/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/tags/kubernetes/" style="font-size: 12px;">kubernetes</a> <a href="/tags/logstash/" style="font-size: 12px;">logstash</a> <a href="/tags/misc/" style="font-size: 12px;">misc</a> <a href="/tags/monitor/" style="font-size: 11px;">monitor</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/network/" style="font-size: 10px;">network</a> <a href="/tags/nodejs/" style="font-size: 11px;">nodejs</a> <a href="/tags/proxy/" style="font-size: 13px;">proxy</a> <a href="/tags/python/" style="font-size: 14px;">python</a> <a href="/tags/redis/" style="font-size: 11px;">redis</a> <a href="/tags/rpi/" style="font-size: 10px;">rpi</a> <a href="/tags/snippet/" style="font-size: 10px;">snippet</a> <a href="/tags/traefik/" style="font-size: 10px;">traefik</a> <a href="/tags/wordpress/" style="font-size: 15px;">wordpress</a> <a href="/tags/创业/" style="font-size: 10px;">创业</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/服务日志/" style="font-size: 10px;">服务日志</a> <a href="/tags/树莓派/" style="font-size: 10px;">树莓派</a> <a href="/tags/浪漫星空/" style="font-size: 11px;">浪漫星空</a> <a href="/tags/软件工程/" style="font-size: 11px;">软件工程</a>
+    </div>
+  </div>
+
   
     
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
     </div>
   </div>
 
@@ -145,6 +1211,22 @@
             <a href="/2020/06/06/hello-world/">Hello World</a>
           </li>
         
+          <li>
+            <a href="/2020/06/06/nginx-e5-ae-9e-e7-8e-b0http-https-e7-9a-84-e9-80-8f-e6-98-8e-e4-bb-a3-e7-90-86/">Nginx 实现HTTP/HTTPS的透明代理</a>
+          </li>
+        
+          <li>
+            <a href="/2020/06/06/git-e9-85-8d-e7-bd-ae-ssh-e8-af-81-e4-b9-a6-e8-ae-bf-e9-97-ae/">GIT 配置 SSH 证书访问</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/05/1637/">读了前言《Nginx开发从入门到精通》</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/13/e6-98-a8-e6-99-9a-e5-86-99-e7-9a-84-e4-bb-a3-e7-a0-81/">昨晚写的代码</a>
+          </li>
+        
       </ul>
     </div>
   </div>
@@ -157,7 +1239,7 @@
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2020 John Doe<br>
+      &copy; 2020 R4ym0n<br>
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>

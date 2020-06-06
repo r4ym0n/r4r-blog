@@ -4,12 +4,12 @@
 
 # Site
 title: R4ym0n-blog 
-subtitle:
-description:
-keywords:
-author: John Doe
-language:
-timezone:
+subtitle: 
+description: personal blogging site
+keywords: tech life
+author: R4ym0n
+language: zh-Hans
+timezone: 
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
